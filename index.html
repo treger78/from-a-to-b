@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>from a to b</title>
+    <style>
+      select,
+      label,
+      option {
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="main">
+      <h2>Укажите направление, время и количество билетов:</h2>
+
+      <label for="route">Выберите направление</label>
+      <select name="route" id="route">
+        <option selected disabled>Выберите направление</option>
+        <option value="из A в B">из A в B</option>
+        <option value="из B в A">из B в A</option>
+        <option value="из A в B и обратно в А">из A в B и обратно в А</option>
+      </select>
+
+      <label for="num">Количество билетов</label>
+      <input id="num" />
+
+      <button id="calculate">Посчитать</button>
+    </main>
+    <script src="./index.js"></script>
+  </body>
+</html>
