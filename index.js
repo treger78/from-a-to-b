@@ -170,27 +170,55 @@ btn.addEventListener('click', () => {
 
   const date = new Date();
 
+  let arriveTime = null;
+
   if (isOneTime) {
     const splitedTime = time.split(':');
 
     date.setHours(Number(splitedTime[0]), Number(splitedTime[1]) + CONSTS.ONE_DIRECTION_TIME);
+
+    arriveTime = `${date.getHours()}:${date.getMinutes()}`.split(':');
+
+    addZero(arriveTime);
   } else {
-    const splitedTime = time.startTime.split(':');
+    let splitedTime = time.startTime.split(':');
     
     date.setHours(Number(splitedTime[0]), Number(splitedTime[1]) + CONSTS.ONE_DIRECTION_TIME);
+
+    let timeString = `${date.getHours()}:${date.getMinutes()}`.split(':');
+
+    addZero(timeString);
+
+    arriveTime = {
+      startTime: timeString,
+    }
+
+    splitedTime = time.returnTime.split(':');
+    
+    date.setHours(Number(splitedTime[0]), Number(splitedTime[1]) + CONSTS.ONE_DIRECTION_TIME);
+
+    timeString = `${date.getHours()}:${date.getMinutes()}`.split(':');
+
+    addZero(timeString)
+
+    arriveTime['returnTime'] = timeString;
   }
-
-  const arriveTime = `${date.getHours()}:${date.getMinutes()}`.split(':');
-
-  addZero(arriveTime);
 
   const declensions = ['билет', 'билета', 'билетов'];
 
-  const message = `
-    Вы выбрали ${ticketsQuantity} ${getDeclension(ticketsQuantity, ...declensions)} по маршруту ${direction} стоимостью ${price}р.
-    Время в пути составит ${CONSTS.ONE_DIRECTION_TIME} минут.
-    Теплоход отправляется в ${isOneTime ? time : time.startTime} и прибывает в ${arriveTime.join(':')}.
-  `;
-
-  alert(message);
+  if (isOneTime) {
+    alert(`
+      Вы выбрали ${ticketsQuantity} ${getDeclension(ticketsQuantity, ...declensions)} по маршруту ${direction} стоимостью ${price}р.
+      Время в пути составит ${CONSTS.ONE_DIRECTION_TIME} минут.
+      Теплоход отправляется в ${isOneTime ? time : time.startTime} и прибывает в ${arriveTime.join(':')}.
+    `);
+  } else {
+    alert(`
+      Вы выбрали ${ticketsQuantity} ${getDeclension(ticketsQuantity, ...declensions)} по маршруту ${direction} стоимостью ${price}р.
+      Время в пути из A в B составит ${CONSTS.ONE_DIRECTION_TIME} минут.
+      Теплоход из A в B отправляется в ${time.startTime} и прибывает в ${arriveTime.startTime.join(':')}.
+      Время обратного пути составит ${CONSTS.ONE_DIRECTION_TIME} минут.
+      Теплоход отправляется в ${time.returnTime} и прибывает в ${arriveTime.returnTime.join(':')}.
+    `);
+  }
 });
