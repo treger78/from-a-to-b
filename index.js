@@ -26,6 +26,16 @@ const CONSTS = {
   GMT: 3,
 };
 
+const addZero = (splitedTime, timeArray = splitedTime, index) => {
+  if (splitedTime[0].length === 1) {
+    timeArray[index ? index : 0] = '0' + timeArray[index ? index : 0];
+  }
+
+  if (splitedTime[1].length === 1) {
+    timeArray[index ? index : 1] = timeArray[index ? index : 1] + '0';
+  }
+}
+
 const convertTime = (timeArray) => {
   const userGMT = - new Date().getTimezoneOffset() / 60;
 
@@ -42,13 +52,7 @@ const convertTime = (timeArray) => {
   
     const splitedTime = timeArray[i].split(':');
   
-    if (splitedTime[0].length === 1) {
-      timeArray[i] = '0' + timeArray[i];
-    }
-  
-    if (splitedTime[1].length === 1) {
-      timeArray[i] = timeArray[i] + '0';
-    }
+    addZero(splitedTime, timeArray, i);
   });
 };
 
@@ -114,7 +118,15 @@ direction.addEventListener('change', () => {
   document.getElementById('route').insertAdjacentElement('afterend', newSpan);
 });
 
+const getTicketsQuantity = () => {
+  return Number(document.getElementById('num').value);
+}
+
 const getDirection = () => {
+  return document.getElementById('route').value;
+}
+
+const getTime = () => {
   const selectedTime = document.getElementsByName('time');
 
   if (selectedTime.length === 0) return;
@@ -129,12 +141,56 @@ const getDirection = () => {
   return selectedTime[0].value;
 }
 
-const getTicketsQuantity = () => {
-  return Number(document.getElementById('num').value);
+const getDeclension = (number, one, two, five) => {
+  number %= 100;
+
+  if (number >= 5 && number <= 20) return five;
+
+  number %= 10;
+
+  if (number === 1) return one;
+
+  if (number >= 2 && number <= 4) return two;
+
+  return five;
 }
 
 const btn = document.getElementById('calculate');
 
 btn.addEventListener('click', () => {
-  console.log(getTicketsQuantity());
+  const ticketsQuantity = getTicketsQuantity();
+  const direction = getDirection();
+  const time = getTime();
+
+  const isOneTime = typeof time !== 'object';
+
+  const price = isOneTime ?
+    ticketsQuantity * CONSTS.ONE_DIRECTION_PRICE :
+    ticketsQuantity * CONSTS.TWO_DIRECTION_PRICE;
+
+  const date = new Date();
+
+  if (isOneTime) {
+    const splitedTime = time.split(':');
+
+    date.setHours(Number(splitedTime[0]), Number(splitedTime[1]) + CONSTS.ONE_DIRECTION_TIME);
+  } else {
+    const splitedTime = time.startTime.split(':');
+    
+    date.setHours(Number(splitedTime[0]), Number(splitedTime[1]) + CONSTS.ONE_DIRECTION_TIME);
+  }
+
+  const arriveTime = `${date.getHours()}:${date.getMinutes()}`.split(':');
+
+  addZero(arriveTime);
+
+  const declensions = ['билет', 'билета', 'билетов'];
+
+  const message = `
+    Вы выбрали ${ticketsQuantity} ${getDeclension(ticketsQuantity, ...declensions)} по маршруту ${direction} стоимостью ${price}р.
+    Время в пути составит ${CONSTS.ONE_DIRECTION_TIME} минут.
+    Теплоход отправляется в ${isOneTime ? time : time.startTime} и прибывает в ${arriveTime.join(':')}.
+  `;
+
+  alert(message);
 });
