@@ -53,6 +53,10 @@ btn.addEventListener('click', () => {
   const direction = getDirection();
   const time = getTime();
 
+  if (!ticketsQuantity || !direction || !time || time.returnTime === '') {
+    return alert('Не все данные заполнены. Пожалуйста, укажите направление, время и количество билетов!');
+  }
+
   const isOneTime = typeof time !== 'object';
 
   const price = isOneTime ?
