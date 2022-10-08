@@ -1,6 +1,5 @@
 import { startTimeFromA, startTimeFromB } from "./utils/timeData.js";
 import { CONSTS } from "./utils/constants.js";
-import { addZero } from "./utils/addZero.js";
 import { convertTime } from "./utils/convertTime.js";
 import { blockWrongTimeForReturnSelect } from "./utils/blockWrongTimeForReturnSelect.js";
 import { createNewLabel } from "./utils/createNewLabel.js";
@@ -8,8 +7,8 @@ import { fillSelectByOptions } from "./utils/fillSelectByOptions.js";
 import { getDeclension } from "./utils/getDeclension.js";
 import { getTicketsQuantity, getDirection, getTime } from "./utils/getTicketData.js";
 
-convertTime(startTimeFromA);
-convertTime(startTimeFromB);
+convertTime(startTimeFromA, true);
+convertTime(startTimeFromB, true);
 
 const direction = document.getElementById('route');
 
@@ -68,35 +67,12 @@ btn.addEventListener('click', () => {
   let arriveTime = null;
 
   if (isOneTime) {
-    const splitedTime = time.split(':');
-
-    date.setHours(Number(splitedTime[0]), Number(splitedTime[1]) + CONSTS.ONE_DIRECTION_TIME);
-
-    arriveTime = `${date.getHours()}:${date.getMinutes()}`.split(':');
-
-    addZero(arriveTime);
+    arriveTime = convertTime([time], false);
   } else {
-    let splitedTime = time.startTime.split(':');
-    
-    date.setHours(Number(splitedTime[0]), Number(splitedTime[1]) + CONSTS.ONE_DIRECTION_TIME);
-
-    let timeString = `${date.getHours()}:${date.getMinutes()}`.split(':');
-
-    addZero(timeString);
-
     arriveTime = {
-      startTime: timeString,
+      startTime: convertTime([time.startTime], false),
+      returnTime: convertTime([time.returnTime], false),
     }
-
-    splitedTime = time.returnTime.split(':');
-    
-    date.setHours(Number(splitedTime[0]), Number(splitedTime[1]) + CONSTS.ONE_DIRECTION_TIME);
-
-    timeString = `${date.getHours()}:${date.getMinutes()}`.split(':');
-
-    addZero(timeString)
-
-    arriveTime['returnTime'] = timeString;
   }
 
   const declensions = ['билет', 'билета', 'билетов'];
