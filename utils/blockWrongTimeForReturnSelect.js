@@ -17,6 +17,8 @@ export const blockWrongTimeForReturnSelect = () => {
       startDate.setHours(Number(startTime[0]), Number(startTime[1]));
       returnDate.setHours(Number(returnTime[0]), Number(returnTime[1]));
 
+      options[i].removeAttribute('disabled');
+
       if (startDate.getTime() + (CONSTS.ONE_DIRECTION_TIME * 60000) > returnDate.getTime()) {
         options[i].setAttribute('disabled', 'true');
       }
